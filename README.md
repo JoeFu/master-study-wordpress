@@ -14,6 +14,9 @@ A courses management system built by Wordpress v4.3.1 and MasterStudy Theme 1.10
 
 # Project Structure
 ----wp-admin
+
 ----wp-content
+
 ----wp-includes
+
 ----wp-resources(database, theme source, plugin source, document...)

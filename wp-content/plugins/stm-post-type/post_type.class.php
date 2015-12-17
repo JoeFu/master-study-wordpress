@@ -1,6 +1,6 @@
 <?php
 
-add_action( 'init', array( 'STM_PostType', 'init' ) );
+add_action( 'init', array( 'STM_PostType', 'init' ), 1 );
 
 class STM_PostType {
 
@@ -337,7 +337,7 @@ class STM_PostType {
 						';
 					break;
 				case 'image':
-					$default_image = get_template_directory_uri() . '/assets/images/default_170x50.gif';
+					$default_image = plugin_dir_url( __FILE__ ) . 'assets/images/default_170x50.gif';
 					$image = '';
 					if ($meta) {
 						$image = wp_get_attachment_image_src($meta, 'medium');
@@ -411,6 +411,8 @@ class STM_PostType {
 					} elseif ( '' == $new && $old ) {
 						delete_post_meta( $post_id, $field, $old );
 					}
+				}else{
+					delete_post_meta( $post_id, $field, $old );
 				}
 			}
 		}

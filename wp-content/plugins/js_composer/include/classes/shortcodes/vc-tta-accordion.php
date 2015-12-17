@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	die( '-1' );
+}
 
 class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 	protected $controls_css_settings = 'out-tc vc_controls-content-widget';
@@ -13,6 +16,8 @@ class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 	 * @var WPBakeryShortCode_VC_Tta_Section
 	 */
 	protected $sectionClass;
+
+	public $nonDraggableClass = 'vc-non-draggable-container';
 
 	public function getFileName() {
 		return 'vc_tta_global';
@@ -36,8 +41,10 @@ class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 	public function setGlobalTtaInfo() {
 		$sectionClass = visual_composer()->getShortCode( 'vc_tta_section' )->shortcodeClass();
 		$this->sectionClass = $sectionClass;
+
 		/** @var $sectionClass WPBakeryShortCode_VC_Tta_Section */
 		if ( is_object( $sectionClass ) ) {
+			VcShortcodeAutoloader::getInstance()->includeClass( 'WPBakeryShortCode_VC_Tta_Section' );
 			WPBakeryShortCode_VC_Tta_Section::$tta_base_shortcode = $this;
 			WPBakeryShortCode_VC_Tta_Section::$self_count = 0;
 			WPBakeryShortCode_VC_Tta_Section::$section_info = array();
@@ -58,8 +65,8 @@ class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 	 */
 	public function getColumnControls( $controls = 'full', $extended_css = '' ) {
 		// we don't need containers bottom-controls for tabs
-		if ( 'bottom-controls' == $extended_css ) {
-			return "";
+		if ( 'bottom-controls' === $extended_css ) {
+			return '';
 		}
 		$column_controls = $this->getColumnControlsModular();
 
@@ -94,6 +101,13 @@ class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 			$classes[] = 'vc_tta-has-pagination';
 		}
 
+		/**
+		 * @since 4.6.2
+		 */
+		if ( isset( $this->atts['el_class'] ) ) {
+			$classes[] = $this->atts['el_class'];
+		}
+
 		return implode( ' ', apply_filters( 'vc_tta_accordion_general_classes', array_filter( $classes ), $this->getAtts() ) );
 	}
 
@@ -122,9 +136,13 @@ class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 
 		$autoplay = isset( $this->atts['autoplay'] ) ? trim( $this->atts['autoplay'] ) : false;
 		if ( $autoplay && 'none' !== $autoplay && intval( $autoplay ) > 0 ) {
-			$attributes[] = 'data-vc-tta-autoplay="' . esc_attr( json_encode( array(
-					'delay' => intval( $autoplay ) * 1000
-				) ) ) . '"';
+			$attributes[] = 'data-vc-tta-autoplay="' . esc_attr(
+				json_encode(
+					array(
+							'delay' => intval( $autoplay ) * 1000,
+						)
+				)
+			) . '"';
 		}
 
 		return implode( ' ', $attributes );
@@ -139,7 +157,7 @@ class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 			return $this->template_vars[ $string ];
 		}
 
-		return "";
+		return '';
 	}
 
 	/**
@@ -197,17 +215,18 @@ class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 			if ( ! $isPageEditable ) {
 				$panelsContent = str_replace( '{{{ control-icon }}}',
 					'<i class="vc_tta-controls-icon vc_tta-controls-icon-' . $atts['c_icon'] . '"></i>',
-					$panelsContent );
+					$panelsContent
+				);
 			} else {
 				$panelsContent = str_replace( '{{{ control-icon }}}',
 					'<i class="vc_tta-controls-icon" data-vc-tta-controls-icon="' . $atts['c_icon'] . '"></i>',
-					$panelsContent );
+					$panelsContent
+				);
 			}
-
 		} else {
 			$panelsContent = str_replace( '{{{ control-icon }}}',
 				'',
-				$panelsContent );
+			$panelsContent );
 		}
 
 		return $panelsContent;
@@ -320,11 +339,10 @@ class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 		$active_section = intval( $atts['active_section'] );
 
 		if ( $strict_bounds ) {
-			$sectionClass = $this->sectionClass;
-
+			VcShortcodeAutoloader::getInstance()->includeClass( 'WPBakeryShortCode_VC_Tta_Section' );
 			if ( $active_section < 1 ) {
 				$active_section = 1;
-			} else if ( $active_section > WPBakeryShortCode_VC_Tta_Section::$self_count ) {
+			} elseif ( $active_section > WPBakeryShortCode_VC_Tta_Section::$self_count ) {
 				$active_section = WPBakeryShortCode_VC_Tta_Section::$self_count;
 			}
 		}
@@ -342,7 +360,6 @@ class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 		if ( empty( $atts['pagination_style'] ) ) {
 			return null;
 		}
-
 		$isPageEditabe = vc_is_page_editable();
 
 		$sectionClass = $this->sectionClass;
@@ -351,6 +368,7 @@ class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 		$html[] = '<ul class="' . $this->getTtaPaginationClasses() . '">';
 
 		if ( ! $isPageEditabe ) {
+			VcShortcodeAutoloader::getInstance()->includeClass( 'WPBakeryShortCode_VC_Tta_Section' );
 			foreach ( WPBakeryShortCode_VC_Tta_Section::$section_info as $nth => $section ) {
 				$strict_bounds = ( 'vc_tta_tabs' === $this->shortcode );
 				$active_section = $this->getActiveSection( $atts, $strict_bounds );
@@ -385,6 +403,16 @@ class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 	 * @return string
 	 */
 	protected function outputTitle( $title ) {
-		return "";
+		return '';
+	}
+	/**
+	 * Check is allowed to add another element inside current element.
+	 *
+	 * @since 4.8
+	 *
+	 * @return bool
+	 */
+	public function getAddAllowed() {
+		return vc_user_access_check_shortcode_all( 'vc_tta_section' );
 	}
 }

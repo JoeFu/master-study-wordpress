@@ -1,5 +1,5 @@
 # Overview
-A courses management system built by Wordpress v4.3.1 and MasterStudy Theme 1.10.
+A courses management system built by Wordpress v4.3.1 and MasterStudy Theme 1.4.1
 
 # How to install by wordpress
 1. Install Wordpress and install masterstudy theme
@@ -20,3 +20,6 @@ A courses management system built by Wordpress v4.3.1 and MasterStudy Theme 1.10
 ----wp-includes
 
 ----wp-resources(database, theme source, plugin source, document...)
+
+# Backup database
+mysqldump  -u rinodung c9 > version1.4.1.sql  

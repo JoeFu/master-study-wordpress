@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	die( '-1' );
+}
+
 /**
  * Shortcode attributes
  * @var $atts
@@ -9,6 +13,7 @@
  * Shortcode class
  * @var $this WPBakeryShortCode_VC_Row_Inner
  */
+$el_class = $css = $el_id = '';
 $output = $after_output = '';
 $atts = vc_map_get_attributes( $this->getShortcode(), $atts );
 extract( $atts );
@@ -35,6 +40,5 @@ $output .= '<div ' . implode( ' ', $wrapper_attributes ) . '>';
 $output .= wpb_js_remove_wpautop( $content );
 $output .= '</div>';
 $output .= $after_output;
-$output .= $this->endBlockComment( $this->getShortcode() );
 
 echo $output;

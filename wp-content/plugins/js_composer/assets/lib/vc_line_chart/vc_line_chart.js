@@ -18,6 +18,9 @@
 					showTooltips: $this.data( 'vcTooltips' ),
 					animationEasing: $this.data( 'vcAnimation' ),
 					datasetFill: true,
+					scaleLabel: function ( object ) {
+						return ' ' + object.value;
+					},
 					responsive: true
 				},
 				color_keys = [
@@ -41,12 +44,12 @@
 
 			// If color/highlight is array (of 2 colors), replace it with generated gradient
 			for ( i = data.datasets.length - 1;
-				  i >= 0;
+				  0 <= i;
 				  i -- ) {
 				for ( j = color_keys.length - 1;
-					  j >= 0;
+					  0 <= j;
 					  j -- ) {
-					if ( 'object' === typeof( data[ 'datasets' ][ i ][ color_keys[ j ] ] ) && data[ 'datasets' ][ i ][ color_keys[ j ] ].length === 2 ) {
+					if ( 'object' === typeof( data[ 'datasets' ][ i ][ color_keys[ j ] ] ) && 2 === data[ 'datasets' ][ i ][ color_keys[ j ] ].length ) {
 						gradient = ctx.createLinearGradient( 0, 0, 0, ctx.canvas.height );
 						gradient.addColorStop( 0, data[ 'datasets' ][ i ][ color_keys[ j ] ][ 0 ] );
 						gradient.addColorStop( 1, data[ 'datasets' ][ i ][ color_keys[ j ] ][ 1 ] );
